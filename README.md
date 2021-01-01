@@ -1,4 +1,4 @@
-# PyTorch Template Project
+# Human Parsing Extractor
 PyTorch deep learning project made easy.
 
 
