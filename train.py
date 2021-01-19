@@ -10,6 +10,25 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 
+def get_transform():
+    transform_image_list = [
+        transforms.Resize((256, 256), 3),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ]
+
+    transform_gt_list = [
+        transforms.Resize((256, 256), 0),
+        transforms.Lambda(lambda img: np.asarray(img, dtype=np.uint8)),
+    ]
+
+    data_transforms = {
+        'img': transforms.Compose(transform_image_list),
+        'gt': transforms.Compose(transform_gt_list),
+    }
+    return data_transforms
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Human Parsing')
 
@@ -24,4 +43,5 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments() 
+
 
