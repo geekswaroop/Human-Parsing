@@ -50,17 +50,9 @@ def load_train_dataset():
     train_images_annotations = []
 
     for train_image, train_image_annotation in zip(train_images_files, train_images_annotations_files):
-        print(train_image)
         img = Image.open(os.path.join(TRAIN_IMAGES_PATH, train_image))
-        if(image_count > 168):
-            img.show()
         gt = Image.open(os.path.join(TRAIN_IMAGES_ANNOTATIONS_PATH, train_image_annotation))
-        if(image_count > 168):
-            gt.show()
-        
-        print(image_count)
-        print(img)
-        print(gt)
+
         train_images.append(transform['img'](img))
         train_images_annotations.append(transform['gt'](gt))
 
@@ -68,7 +60,7 @@ def load_train_dataset():
         # train_images_annotations.append(Image.open(os.path.join(TRAIN_IMAGES_ANNOTATIONS_PATH, train_image_annotation)))
         
         image_count += 1
-        if image_count > 1000: 
+        if image_count > 100: 
             break
 
     return train_images, train_images_annotations
@@ -118,5 +110,5 @@ if __name__ == '__main__':
     for i, data in enumerate(train_loader, 0):
         x, y = data
 
-        # print(x)
-        # print(np.unique(y[0]))
+        print(x)
+        print(np.unique(y[0]))

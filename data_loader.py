@@ -1,69 +1,12 @@
 import os
-import imageio as img
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from PIL import Image
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Setting paths
 PAR_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/anirudh/ML/Projects/HumanParsingIEEE/Datasets/LIP')
-TRAIN_IMAGES_PATH = os.path.join(PAR_PATH, 'TrainVal_images', 'train_images')
-TRAIN_IMAGES_ANNOTATIONS_PATH = os.path.join(PAR_PATH, 'TrainVal_parsing_annotations', 'train_segmentations')
-
-
-# Funtion to return sorted list of all files in a directory
-def list_dir(path):
-    files_list = []
-
-    for files in os.listdir(path):
-        files_list.append(files)
-
-    files_list.sort() # Sorting according to filename
-    return files_list
-
-
-# List train images and annotations filenames (Checks for mismatches)
-def list_train_dataset(train_images_path, train_images_annotations_path):
-
-    X = list_dir(train_images_path) # Train images
-    Y = list_dir(train_images_annotations_path) # Train image annotations
-    
-    # Checking if X, Y files match
-    for x, y in zip(X, Y):
-        if x[0:-3] != y[0: -3]: 
-            raise Exception('Error : Mismatched')
-
-    return X, Y
-
-    
-# Loads train dataset
-def load_train_dataset():
-    transform = get_transform()
-
-    # Loading train_dataset_names
-    train_images_files, train_images_annotations_files = list_train_dataset(TRAIN_IMAGES_PATH, TRAIN_IMAGES_ANNOTATIONS_PATH)
-    image_count = 1
-
-    train_images = []
-    train_images_annotations = []
-
-    for train_image, train_image_annotation in zip(train_images_files, train_images_annotations_files):
-        img = Image.open(os.path.join(TRAIN_IMAGES_PATH, train_image))
-        gt = Image.open(os.path.join(TRAIN_IMAGES_ANNOTATIONS_PATH, train_image_annotation))
-
-        train_images.append(transform['img'](img))
-        train_images_annotations.append(transform['gt'](gt))
-
-        # train_images.append(Image.open(os.path.join(TRAIN_IMAGES_PATH, train_image)))
-        # train_images_annotations.append(Image.open(os.path.join(TRAIN_IMAGES_ANNOTATIONS_PATH, train_image_annotation)))
-        
-        image_count += 1
-        if image_count > 100: 
-            break
-
-    return train_images, train_images_annotations
 
 def get_transform():
     transform_image_list = [
@@ -85,14 +28,20 @@ def get_transform():
 
 class LIP(Dataset):
 
-    def __init__(self, transform):
-        train_images, train_images_annotations = load_train_dataset()
-        print(len(train_images))
+    def __init__(self, par_path, transform, is_local_testing=False):
+
+        self.par_path = par_path
+        self.transform = transform
+        self.is_local_testing = is_local_testing
+
+        self.train_images_path = os.path.join(par_path, 'TrainVal_images', 'train_images')
+        self.train_images_annotations_path = os.path.join(par_path, 'TrainVal_parsing_annotations', 'train_segmentations')
+
+        train_images, train_images_annotations = self.load_train_dataset()
 
         self.len = len(train_images)
         self.x_data = train_images
         self.y_data = train_images_annotations
-        print('completed')
 
     def __getitem__(self, index):
         return self.x_data[index], self.y_data[index]
@@ -100,15 +49,60 @@ class LIP(Dataset):
     def __len__(self):
         return self.len
 
+    # Loads train dataset
+    def load_train_dataset(self):
+
+        # Loading train_dataset_names
+        train_images_files, train_images_annotations_files = self.list_train_dataset()
+        image_count = 1
+
+        train_images = []
+        train_images_annotations = []
+
+        for train_image, train_image_annotation in zip(train_images_files, train_images_annotations_files):
+            img = Image.open(os.path.join(self.train_images_path, train_image))
+            gt = Image.open(os.path.join(self.train_images_annotations_path, train_image_annotation))
+
+            train_images.append(transform['img'](img))
+            train_images_annotations.append(transform['gt'](gt))
+            
+            # If local testing load a subset of dataset
+            if self.is_local_testing:
+                image_count += 1
+                if image_count > 100: 
+                    break
+
+        return train_images, train_images_annotations
+
+
+    # List train images and annotations filenames (Checks for mismatches)
+    def list_train_dataset(self):
+
+        X = self.list_dir(self.train_images_path) # Train images
+        Y = self.list_dir(self.train_images_annotations_path) # Train image annotations
+        
+        # Checking if X, Y files match
+        for x, y in zip(X, Y):
+            if x[0:-3] != y[0: -3]: 
+                raise Exception('Error : Mismatched')
+
+        return X, Y
+
+    # Funtion to return sorted list of all files in a directory
+    def list_dir(self, path):
+        files_list = []
+
+        for files in os.listdir(path):
+            files_list.append(files)
+
+        files_list.sort() # Sorting according to filename
+        return files_list
 
 
 if __name__ == '__main__':
     transform = get_transform()
-    dataset = LIP(transform=transform)
+    dataset = LIP(par_path=PAR_PATH, transform=transform, is_local_testing=False)
     train_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False)
 
-    for i, data in enumerate(train_loader, 0):
-        x, y = data
+    print('Dataset Loaded') # Log
 
-        print(x)
-        print(np.unique(y[0]))
