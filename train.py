@@ -6,9 +6,11 @@ import torch
 from torch import nn
 from torch import optim
 from torch.optim.lr_scheduler import MultiStepLR
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
+from data_loader import LIP
 
+PAR_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/anirudh/ML/Projects/HumanParsingIEEE/Datasets/LIP')
 
 def get_transform():
     transform_image_list = [
@@ -42,6 +44,15 @@ def parse_arguments():
 
 
 if __name__ == '__main__':
-    args = parse_arguments() 
+    args = parse_arguments()
 
+    transform = get_transform()
+    dataset = LIP(par_path=args.data_path, transform=transform) 
+    train_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False)
+
+    for data in train_loader:
+        X, Y = data
+        print(X, Y)
+
+    print('Dataset Loaded') # Log
 
