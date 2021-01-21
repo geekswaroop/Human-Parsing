@@ -10,7 +10,6 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from data_loader import LIP
 
-PAR_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/anirudh/ML/Projects/HumanParsingIEEE/Datasets/LIP')
 
 def get_transform():
     transform_image_list = [
@@ -43,16 +42,26 @@ def parse_arguments():
     return args
 
 
+def get_dataloader(data_path):
+    return DataLoader(
+        dataset=LIP(
+            par_path=data_path,
+            transform=get_transform()
+        ), 
+        batch_size=1, 
+        shuffle=False
+    )
+   
+
 if __name__ == '__main__':
     args = parse_arguments()
-
-    transform = get_transform()
-    dataset = LIP(par_path=args.data_path, transform=transform) 
-    train_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False)
+    train_loader = get_dataloader(args.data_path)
 
     for data in train_loader:
         X, Y = data
         print(X, Y)
 
+
     print('Dataset Loaded') # Log
+
 

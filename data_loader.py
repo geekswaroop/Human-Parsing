@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 from PIL import Image
 import numpy as np
 
+
 class LIP(Dataset):
 
     def __init__(self, par_path, transform):
@@ -21,6 +22,7 @@ class LIP(Dataset):
     def __len__(self):
         return self.len
 
+    # Returns training example at index 'index'
     def get_sample_at_index(self, index): 
         
         img = Image.open(self.img_path[index])
@@ -37,6 +39,7 @@ class LIP(Dataset):
 
         return img, gt
 
+    # Returns list of all training examples
     def get_image_paths(self):
         train_img_dir = os.path.join(self.par_path, 'TrainVal_images', 'train_images')
         train_gt_dir = os.path.join(self.par_path, 'TrainVal_parsing_annotations', 'train_segmentations')
@@ -52,4 +55,5 @@ class LIP(Dataset):
             gt_paths.append(os.path.join(train_gt_dir, line.rstrip() + '.png'))
 
         return img_paths, gt_paths
+
 
