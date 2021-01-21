@@ -24,7 +24,6 @@ class LIP(Dataset):
 
     # Returns training example at index 'index'
     def get_sample_at_index(self, index): 
-        
         img = Image.open(self.img_path[index])
         if img.mode == 'L': # If image is greyscale convert to RGB
             img = img.convert('RGB')
