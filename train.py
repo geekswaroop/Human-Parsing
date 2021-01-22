@@ -12,6 +12,12 @@ from Datasets.lip import LIP
 from matplotlib import pyplot as plt
 
 
+# Models
+models = {
+    'torch_resnet50': models.segmentation.fcn_resnet50(pretrained=True, progress=True, num_classes=21).eval()
+}
+
+
 def get_transform():
     transform_image_list = [
         transforms.Resize((256, 256), 3),
@@ -69,16 +75,18 @@ def plot_img_gt_pred(img, gt, pred):
     plt.show()
 
 
-if __name__ == '__main__':
-    args = parse_arguments()
-    train_loader = get_dataloader(args.data_path, train=args.train, batch_size=args.batch_size)
-    model_ft = models.segmentation.fcn_resnet50(pretrained=True, progress=True, num_classes=21)
-    model_ft.eval()
+def run_trained_model(model_ft, train_loader):
     for data in train_loader:
         img, gt = data
         pred = torch.argmax(model_ft(img)['out'], dim=1)
 
-        print(img.shape, gt.shape, pred.shape)
-        plot_img_gt_pred(img[0], gt[0], pred[0])
+        print(img.shape, gt.shape, pred.shape) # Debug
+        plot_img_gt_pred(img[0], gt[0], pred[0]) # Debug
 
-    print('Dataset Loaded') # Log
+
+if __name__ == '__main__':
+    args = parse_arguments()
+    train_loader = get_dataloader(args.data_path, train=args.train, batch_size=args.batch_size)
+    run_trained_model(models['torch_resnet50'], train_loader)
+
+
