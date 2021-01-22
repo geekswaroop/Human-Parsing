@@ -7,8 +7,9 @@ from torch import nn
 from torch import optim
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader, Dataset
-from torchvision import transforms
-from data_loader import LIP
+from torchvision import transforms, models
+from Datasets.lip import LIP
+from matplotlib import pyplot as plt
 
 
 def get_transform():
@@ -42,11 +43,12 @@ def parse_arguments():
     return args
 
 
-def get_dataloader(data_path):
+def get_dataloader(data_path, train=True):
     return DataLoader(
         dataset=LIP(
             par_path=data_path,
-            transform=get_transform()
+            transform=get_transform(),
+            train=train
         ), 
         batch_size=1, 
         shuffle=False
@@ -55,11 +57,20 @@ def get_dataloader(data_path):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    train_loader = get_dataloader(args.data_path)
-
+    train_loader = get_dataloader(args.data_path, train=False)
+    model_ft = models.segmentation.fcn_resnet50(pretrained=True, progress=True, num_classes=21)
     for data in train_loader:
         X, Y = data
-        print(X, Y)
+        print(torch.argmax(model_ft(X)['out'], dim=1).shape)
+
+        #subplot(r,c) provide the no. of rows and columns
+        f, axarr = plt.subplots(3,1) 
+
+        # use the created array to output your multiple images. In this case I have stacked 4 images vertically
+        axarr[0].imshow(X[0].permute(1, 2, 0))
+        axarr[1].imshow(Y.permute(1, 2, 0))
+        axarr[2].imshow(torch.argmax(model_ft(X)['out'], dim=1).permute(1, 2, 0))
+        plt.show()
 
 
     print('Dataset Loaded') # Log
