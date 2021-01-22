@@ -38,6 +38,10 @@ def parse_arguments():
     parser.add_argument('-e', '--epochs', help='Set number of train epochs', default=100, type=int)
     parser.add_argument('-b', '--batch-size', help='Set size of the batch', default=32, type=int)
     parser.add_argument('-d', '--data-path', help='Set path of dataset', default='.', type=str)
+    feature_parser = parser.add_mutually_exclusive_group(required=False)
+    feature_parser.add_argument('-t', '--train', dest='train', action='store_true')
+    feature_parser.add_argument('-ev', '--eval', dest='train', action='store_false')
+    parser.set_defaults(train=True)
 
     args = parser.parse_args()
     return args
@@ -57,7 +61,7 @@ def get_dataloader(data_path, train=True):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    train_loader = get_dataloader(args.data_path, train=False)
+    train_loader = get_dataloader(args.data_path, train=args.train)
     model_ft = models.segmentation.fcn_resnet50(pretrained=True, progress=True, num_classes=21)
     for data in train_loader:
         X, Y = data
