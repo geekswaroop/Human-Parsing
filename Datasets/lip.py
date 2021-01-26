@@ -1,14 +1,14 @@
 import os
 from torch.utils.data import Dataset
 from PIL import Image
-import numpy as np
 
 
 class LIP(Dataset):
 
-    def __init__(self, par_path, transform):
+    def __init__(self, par_path, transform, train=True):
         self.par_path = par_path # Setting parent directory
         self.transform = transform # Setting transform object
+        self.train = train # Setting train / eval
 
         # Setting image paths
         self.img_path, self.gt_path = self.get_image_paths()
@@ -40,18 +40,29 @@ class LIP(Dataset):
 
     # Returns list of all training examples
     def get_image_paths(self):
-        train_img_dir = os.path.join(self.par_path, 'TrainVal_images', 'train_images')
-        train_gt_dir = os.path.join(self.par_path, 'TrainVal_parsing_annotations', 'train_segmentations')
+        if self.train:
+            img_dir = os.path.join(self.par_path, 'TrainVal_images', 'train_images')
+        else:
+            img_dir = os.path.join(self.par_path, 'TrainVal_images', 'val_images')
 
-        train_id_path = os.path.join(self.par_path, 'TrainVal_images', 'train_id.txt')
+        if self.train:
+            gt_dir = os.path.join(self.par_path, 'TrainVal_parsing_annotations', 'train_segmentations')
+        else:   
+            gt_dir = os.path.join(self.par_path, 'TrainVal_parsing_annotations', 'val_segmentations')
+
+        if self.train:
+            id_path = os.path.join(self.par_path, 'TrainVal_images', 'train_id.txt')
+        else:
+            id_path = os.path.join(self.par_path, 'TrainVal_images', 'val_id.txt')
+
         img_paths = []
         gt_paths = []
 
-        f = open(train_id_path, 'r')
+        f = open(id_path, 'r')
 
         for line in f:
-            img_paths.append(os.path.join(train_img_dir, line.rstrip() + '.jpg'))
-            gt_paths.append(os.path.join(train_gt_dir, line.rstrip() + '.png'))
+            img_paths.append(os.path.join(img_dir, line.rstrip() + '.jpg'))
+            gt_paths.append(os.path.join(gt_dir, line.rstrip() + '.png'))
 
         return img_paths, gt_paths
 
