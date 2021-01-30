@@ -162,13 +162,13 @@ class ResNet(nn.Module):
 class _DenseLayer(nn.Sequential):
     def __init__(self, num_input_features, growth_rate, bn_size, drop_rate):
         super(_DenseLayer, self).__init__()
-        self.add_module('norm.1', nn.BatchNorm2d(num_input_features)),
-        self.add_module('relu.1', nn.ReLU(inplace=True)),
-        self.add_module('conv.1', nn.Conv2d(num_input_features, bn_size *
+        self.add_module('norm1', nn.BatchNorm2d(num_input_features)),
+        self.add_module('relu1', nn.ReLU(inplace=True)),
+        self.add_module('conv1', nn.Conv2d(num_input_features, bn_size *
                                             growth_rate, kernel_size=1, stride=1, bias=False)),
-        self.add_module('norm.2', nn.BatchNorm2d(bn_size * growth_rate)),
-        self.add_module('relu.2', nn.ReLU(inplace=True)),
-        self.add_module('conv.2', nn.Conv2d(bn_size * growth_rate, growth_rate,
+        self.add_module('norm2', nn.BatchNorm2d(bn_size * growth_rate)),
+        self.add_module('relu2', nn.ReLU(inplace=True)),
+        self.add_module('conv2', nn.Conv2d(bn_size * growth_rate, growth_rate,
                                             kernel_size=3, stride=1, padding=1, bias=False)),
         self.drop_rate = drop_rate
 
@@ -332,33 +332,38 @@ def densenet(pretrained=True):
 def resnet18(pretrained=True):
     model = ResNet(BasicBlock, [2, 2, 2, 2])
     if pretrained:
-        load_weights_sequential(model, model_zoo.load_url(model_urls['resnet18']))
+        pass
+        # load_weights_sequential(model, model_zoo.load_url(model_urls['resnet18']))
     return model
 
 
 def resnet34(pretrained=True):
     model = ResNet(BasicBlock, [3, 4, 6, 3])
     if pretrained:
-        load_weights_sequential(model, model_zoo.load_url(model_urls['resnet34']))
+        pass
+        # load_weights_sequential(model, model_zoo.load_url(model_urls['resnet34']))
     return model
 
 
 def resnet50(pretrained=True):
     model = ResNet(Bottleneck, [3, 4, 6, 3])
     if pretrained:
-        load_weights_sequential(model, model_zoo.load_url(model_urls['resnet50']))
+        pass
+        # load_weights_sequential(model, model_zoo.load_url(model_urls['resnet50']))
     return model
 
 
 def resnet101(pretrained=True):
     model = ResNet(Bottleneck, [3, 4, 23, 3])
     if pretrained:
-        load_weights_sequential(model, model_zoo.load_url(model_urls['resnet101']))
+        pass
+        # load_weights_sequential(model, model_zoo.load_url(model_urls['resnet101']))
     return model
 
 
 def resnet152(pretrained=True):
     model = ResNet(Bottleneck, [3, 8, 36, 3])
     if pretrained:
-        load_weights_sequential(model, model_zoo.load_url(model_urls['resnet152']))
+        pass
+        # load_weights_sequential(model, model_zoo.load_url(model_urls['resnet152']))
     return model
