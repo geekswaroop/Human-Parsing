@@ -9,6 +9,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms, models
 from Datasets.lip import LIP
+from Datasets.lip import LIPWithClass
 from matplotlib import pyplot as plt
 
 
@@ -44,6 +45,7 @@ def parse_arguments():
     parser.add_argument('-e', '--epochs', help='Set number of train epochs', default=100, type=int)
     parser.add_argument('-b', '--batch-size', help='Set size of the batch', default=32, type=int)
     parser.add_argument('-d', '--data-path', help='Set path of dataset', default='.', type=str)
+    parser.add_argument('-n', '--num-class', help='Set number of segmentation classes', default=20, type=int)
 
     # Mutually Exclusive Group 1 (Train / Eval)
     train_eval_parser = parser.add_mutually_exclusive_group(required=False)
@@ -55,12 +57,13 @@ def parse_arguments():
     return args
 
 
-def get_dataloader(data_path, train=True, batch_size=32, shuffle=False):
+def get_dataloader(data_path, train=True, batch_size=32, shuffle=False, num_class=20):
     return DataLoader(
-        dataset=LIP(
+        dataset=LIPWithClass(
             par_path=data_path,
             transform=get_transform(),
-            train=train
+            train=train,
+            num_class=num_class
         ), 
         batch_size=batch_size, 
         shuffle=shuffle
@@ -77,7 +80,7 @@ def plot_img_gt_pred(img, gt, pred):
 
 def run_trained_model(model_ft, train_loader):
     for data in train_loader:
-        img, gt = data
+        img, gt, gt_cls = data
         pred = torch.argmax(model_ft(img)['out'], dim=1)
 
         print(img.shape, gt.shape, pred.shape) # Debug
@@ -87,7 +90,13 @@ def run_trained_model(model_ft, train_loader):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    train_loader = get_dataloader(args.data_path, train=args.train, batch_size=args.batch_size)
+    train_loader = get_dataloader(args.data_path, train=args.train, batch_size=args.batch_size, num_class=args.num_class)
+
+    # Debug
+    for data in train_loader:
+        x, y, cls = data
+        break
+
     run_trained_model(models['torch_resnet50'], train_loader)
 
 
