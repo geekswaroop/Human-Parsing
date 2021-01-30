@@ -81,6 +81,7 @@ def run_trained_model(model_ft, train_loader):
         pred = torch.argmax(model_ft(img)['out'], dim=1)
 
         print(img.shape, gt.shape, pred.shape) # Debug
+        print(np.unique(gt), np.unique(pred)) # Debug
         plot_img_gt_pred(img[0], gt[0], pred[0]) # Debug
 
 
