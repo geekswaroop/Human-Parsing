@@ -11,12 +11,34 @@ from torchvision import transforms, models
 from Datasets.lip import LIP
 from Datasets.lip import LIPWithClass
 from matplotlib import pyplot as plt
+from Net.pspnet import PSPNet
 
 
 # Models
 models = {
-    'torch_resnet50': models.segmentation.fcn_resnet50(pretrained=True, progress=True, num_classes=21).eval()
+    'squeezenet': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=512, deep_features_size=256, backend='squeezenet'),
+    'densenet': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=1024, deep_features_size=512, backend='densenet'),
+    'resnet18': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=512, deep_features_size=256, backend='resnet18'),
+    'resnet34': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=512, deep_features_size=256, backend='resnet34'),
+    'resnet50': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=2048, deep_features_size=1024, backend='resnet50'),
+    'resnet101': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=2048, deep_features_size=1024, backend='resnet101'),
+    'resnet152': lambda: PSPNet(sizes=(1, 2, 3, 6), psp_size=2048, deep_features_size=1024, backend='resnet152')
 }
+
+
+def build_network(snapshot, backend, gpu=False):
+    epoch = 0
+    backend = backend.lower()
+    net = models[backend]()
+    net = nn.DataParallel(net)
+    if snapshot is not None:
+        _, epoch = os.path.basename(snapshot).split('_')
+        epoch = int(epoch)
+        net.load_state_dict(torch.load(snapshot))
+        logging.info("Snapshot for epoch {} loaded from {}".format(epoch, snapshot))
+    if gpu:
+        net = net.cuda()
+    return net, epoch
 
 
 def get_transform():
@@ -46,6 +68,9 @@ def parse_arguments():
     parser.add_argument('-b', '--batch-size', help='Set size of the batch', default=32, type=int)
     parser.add_argument('-d', '--data-path', help='Set path of dataset', default='.', type=str)
     parser.add_argument('-n', '--num-class', help='Set number of segmentation classes', default=20, type=int)
+    parser.add_argument('-be', '--backend', help='Set Feature extractor', default='densenet', type=str)
+    parser.add_argument('-s', '--snapshot', help='Set path to pre-trained weights', default=None, type=str)
+    parser.add_argument('-g', '--gpu', help='Set gpu [True / False]', default=False, type=bool)
 
     # Mutually Exclusive Group 1 (Train / Eval)
     train_eval_parser = parser.add_mutually_exclusive_group(required=False)
@@ -89,7 +114,13 @@ def run_trained_model(model_ft, train_loader):
 
 
 if __name__ == '__main__':
+    # Parse Arguments
     args = parse_arguments()
+
+    # Make directory to store trained weights
+    models_path = os.path.join('./checkpoints', args.backend)
+    os.makedirs(models_path, exist_ok=True)
+
     train_loader = get_dataloader(args.data_path, train=args.train, batch_size=args.batch_size, num_class=args.num_class)
 
     # Debug
@@ -97,6 +128,6 @@ if __name__ == '__main__':
         x, y, cls = data
         break
 
-    run_trained_model(models['torch_resnet50'], train_loader)
+    # run_trained_model(models['torch_resnet50'], train_loader)
 
 
