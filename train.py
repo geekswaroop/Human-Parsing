@@ -138,6 +138,7 @@ if __name__ == '__main__':
 
         for count, (img, gt, gt_cls) in enumerate(train_loader):
             # Input data
+
             if args.gpu:
                 img, gt, gt_cls = img.cuda(), gt.cuda(), gt_cls.cuda()
 
@@ -156,7 +157,7 @@ if __name__ == '__main__':
             # Log
             epoch_losses.append(loss.item())
             status = '[{0}] step = {1}/{2}, loss = {3:0.4f} avg = {4:0.4f}, LR = {5:0.7f}'.format(
-                epoch, count, len(train_loader),
+                epoch, count + 1, len(train_loader),
                 loss.item(), np.mean(epoch_losses), scheduler.get_lr()[0])
             print(status)
 
