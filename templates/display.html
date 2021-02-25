@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        img {
+              max-width: 80%;
+              height: auto;
+            }
+        body {
+            background-image: url('./static/bg_image.jpeg');
+          }
+    </style>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    
+    <title>Human Parsing Representation Extractor</title>
+  </head>
+  <body>
+    <br>
+    <h2 style="text-align:center">Upload Successful!</h2><br><br>
+
+    <div id="available" style="display:none">
+        <h3 style="text-align:center">Input Image</h2>
+        <div align="center">
+        <img src="{{ inputImage }}" height="400" width="400" alt="User Input image"></div><br><br><br>
+        <h3 style="text-align:center">Output Image</h2>
+        <div align="center">   
+        <img src="{{ outputImage }}" height="400" width="400" alt="Final Predicted image"><br>  
+        
+        <br><br><br>
+        <h3>Colour Classes</h3>
+        <p><!-- List all classes with corresponding colour--></p>
+    </div>
+    <div id="unavailable" style="display:none">
+        <p style="text-align:center">
+            Some error ocurred. Kindly try again!
+        </p>
+    </div>
+    <br>
+    <div class="text-center">
+        <a class="btn btn-primary text-center" href="/" role="button">Go back</a><br><br>
+    </div>
+    <script type="text/javascript">
+        fetch('./static/output.png', { method: 'HEAD' })
+            .then(res => {
+            if (res.ok) {
+                fetch('./static/input.png', { method: 'HEAD' })
+                    .then(res => {
+                        if (res.ok) {
+                            document.getElementById('available').style.display = "block";
+                            document.getElementById('unavailable').style.display = "none";
+                        } else {
+                            alert("Input image is unavailable!")
+                            document.getElementById('unavailable').style.display = "block";
+                            document.getElementById('available').style.display = "none";
+                        }
+                    }).catch(err => alert('Error:', err));
+            } else {
+                alert("Output image is unavailable!")
+                document.getElementById('unavailable').style.display = "block";
+                document.getElementById('available').style.display = "none";
+            }
+        }).catch(err => alert('Error:', err));
+    </script>
+
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
