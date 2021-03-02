@@ -105,10 +105,10 @@ def show_image(img, pred, result_path):
     ax1.set_title('pred')
     mappable = ax1.imshow(pred, cmap=cmap, norm=norm)
     # colorbar legend
-    cbar = plt.colorbar(mappable, ax=axes, shrink=0.7, )
+    cbar = plt.colorbar(mappable, ax=axes, shrink=1, )
     cbar.ax.get_yaxis().set_ticks([])
     for j, lab in enumerate(classes):
-        cbar.ax.text(2.3, (j + 0.45) / 20.0, lab, ha='left', va='center', )
+        cbar.ax.text(25, (j + 0.45), lab, ha='left', va='center', )
 
     plt.savefig(fname=os.path.join(result_path, "result.jpg"))
     print(f'result saved to {os.path.join(result_path, "result.jpg")}')
