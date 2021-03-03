@@ -7,9 +7,14 @@ The implementation of PSPNet is based on [here](https://github.com/Lextal/pspnet
 ## Environment
 All the required libraries can be found in requirements.txt. They are also listed below.
 ```
+click==7.1.2
 cycler==0.10.0
+Flask==1.1.2
 imageio==2.9.0
+itsdangerous==1.1.0
+Jinja2==2.11.3
 kiwisolver==1.3.1
+MarkupSafe==1.1.1
 matplotlib==3.3.3
 numpy==1.19.5
 Pillow==8.1.0
@@ -19,11 +24,14 @@ six==1.15.0
 torch==1.7.1
 torchvision==0.8.2
 typing-extensions==3.7.4.3
+Werkzeug==1.0.1
+
 ```
 
 ## Project Structure
 ```
 Human-Parsing
+├── app.py
 ├── checkpoints
 │   ├── densenet
 │   ├── resnet101
@@ -40,6 +48,13 @@ Human-Parsing
 │   └── pspnet.py
 ├── README.md
 ├── requirements.txt
+├── static
+│   ├── bg_image.jpeg
+│   ├── input.png
+│   └── output.png
+├── templates
+│   ├── display.html
+│   └── home.html
 └── train.py
 ```
 
