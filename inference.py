@@ -32,6 +32,7 @@ def parse_arguments():
     parser.add_argument('-m', '--models-path', type=str, default='./checkpoints', help='Path for storing model snapshots')
     parser.add_argument('-g', '--gpu', help='Set gpu [True / False]', default=False, action='store_true')
     parser.add_argument('-o', '--output', help='Set output file name', default='result.jpg', type=str)
+    parser.add_argument('-v', '--visualize', action='store_true', help="Display output and ground truth.")
 
     args = parser.parse_args()
 
@@ -64,7 +65,7 @@ def get_transform():
     return transforms.Compose(transform_image_list)
 
 
-def show_image(img, pred, result_path, file_name='result.jpg'):
+def show_image(img, pred, result_path, file_name='result.jpg', visualize=False):
     fig, axes = plt.subplots(1, 2)
     ax0, ax1 = axes
     ax0.get_xaxis().set_ticks([])
@@ -113,7 +114,9 @@ def show_image(img, pred, result_path, file_name='result.jpg'):
 
     plt.savefig(fname=os.path.join(result_path, file_name))
     print(f'result saved to {os.path.join(result_path, file_name)}')
-    plt.show()
+
+    if visualize:
+        plt.show()
 
 
 if __name__ == '__main__':
@@ -136,6 +139,6 @@ if __name__ == '__main__':
         pred = pred.cpu().numpy().transpose(1, 2, 0)
         pred = np.asarray(np.argmax(pred, axis=2), dtype=np.uint8).reshape((256, 256, 1))
 
-        show_image(img, pred, args.result_path, args.output)
+        show_image(img, pred, args.result_path, args.output, args.visualize)
 
 
