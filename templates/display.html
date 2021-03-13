@@ -12,6 +12,18 @@
         body {
             background-image: url('./static/bg_image.jpeg');
           }
+        .checkboxes label {
+          display: block;
+          padding-right: 10px;
+          padding-left: 22px;
+          text-indent: -22px;
+        }
+        .checkboxes input {
+          vertical-align: middle;
+        }
+        .checkboxes label span {
+          vertical-align: middle;
+        }
     </style>
 
     <!-- Bootstrap CSS -->
@@ -27,12 +39,17 @@
         <h3 style="text-align:center">Input Image</h2>
         <div align="center">
         <img src="{{ inputImage }}" height="400" width="400" alt="User Input image"></div><br><br><br>
-        <h3 style="text-align:center">Output Image</h2>
+        <h3 style="text-align:center">Output Images</h2><br>
         <div align="center">   
-        <img src="{{ outputImage }}" height="400" width="400" alt="Final Predicted image"><br>  
+        <img src="./static/p2.jpeg" height="200" width="200" alt="Final Predicted image"><br><br>
+        <img src="./static/p3.jpeg" height="200" width="200" alt="Final Predicted image"> <br><br>
+        <img src="./static/p4.jpeg" height="200" width="200" alt="Final Predicted image"><br><br> 
+        <img src="./static/p5.jpeg" height="200" width="200" alt="Final Predicted image"><br><br> 
+        <img src="./static/p6.jpeg" height="200" width="200" alt="Final Predicted image">  
         
         <br><br><br>
-        <h3>Colour Classes</h3>
+        <h3>Colour Classes</h3><br><br><br>
+        
         <p><!-- List all classes with corresponding colour--></p>
     </div>
     <div id="unavailable" style="display:none">
@@ -70,6 +87,9 @@
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+
+    
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--
