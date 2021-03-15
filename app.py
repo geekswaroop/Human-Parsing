@@ -8,6 +8,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 MODEL = 'densenet'
 
 app = Flask(__name__)
+app.secret_key = b'_5ef8t202w@$Trz\n\xec]/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -32,19 +33,28 @@ def upload_file():
 
             # Input and Output filenames
             input_filename = './static/input.png'
-            output_filename = './static/output.png'
 
-            # Run inference.py
-            script_command = f'python3 inference.py -d {input_filename} -o {output_filename} -be {MODEL}'
-            os.system(script_command)
+
+            models = request.form.getlist('model')
+            if models == []:
+                flash('No ML model selected')
+                return redirect(request.url)
+
+            MODELS = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152', 'densenet']
+            model_dict = {}
+            for MODEL in MODELS:
+                if MODEL in models:
+                    model_dict[MODEL] = True
+                    # Run inference.py
+                    script_command = f'python3 inference.py -d {input_filename} -o ./static/output_{MODEL}.png -be {MODEL}'
+                    os.system(script_command)
+                else:
+                    model_dict[MODEL] = False
 
             # Add dummy values to image path to avoid HTML Image caching
             suffix = "?" + datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            print("Suffix = ", suffix, type(suffix))
-            input_filename += suffix
-            output_filename += suffix
 
-            return render_template('display.html', inputImage = input_filename, outputImage = output_filename)
+            return render_template('display.html', suffix = suffix, model_dict = model_dict)
     return render_template('home.html')
     
 

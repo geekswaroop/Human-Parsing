@@ -11,35 +11,59 @@
             }
         body {
             background-image: url('./static/bg_image.jpeg');
+            background-repeat: repeat;
           }
     </style>
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    {% with messages = get_flashed_messages() %}  
+         {% if messages %} 
+         <br><br><br>
+            <div class="container"> 
+               {% for message in messages %}  
+                  <div class="alert alert-warning alert-dismissible" align="center">
+                    <strong>Warning! </strong> {{message}}!
+                    <a href="/" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  </div>
+               {% endfor %}
+            </div>
+         {% endif %}  
+      {% endwith %} 
+
 
     <title>Human Parsing Representation Extractor</title>
   </head>
   <body>
     <h2 style="text-align:center">Human Parsing Representation Extractor WebApp</h2><br><br><br><br><br>
     <div class="text-center">
-      <h4>Upload new File</h4>
-      <div class="container" align="center">
-      <form method=post enctype=multipart/form-data>
-      <div class="upload" align="center">
+      <form class="inputForm" method=post enctype=multipart/form-data>
+        <h4>Upload new File</h4><br>
+        <div class="container" align="center">
+        <div class="upload" align="center">
           <input class="form-control" id="formFileLg" type=file name=file required><br>
-          <input class="btn btn-primary btn-lg" type="submit" value="Upload">
-      </div>
-    </form>
-    </div>
-    </div>
+        </div></div><br><br><br>
 
-    
+
+        <h4>Select one or more ML models for prediction</h4>
+        <div class="container" align="center">
+        <div class="Models required" align="center" style="font-size: 20px;">
+          <input type=checkbox name=model value='resnet18'> ResNet - 18 <br/>
+          <input type=checkbox name=model value='resnet34'> ResNet - 34 <br/>
+          <input type=checkbox name=model value='resnet50'> ResNet - 50 <br/>
+          <input type=checkbox name=model value='resnet101'> ResNet - 101 <br/>
+          <input type=checkbox name=model value='resnet154'> ResNet - 154 <br/>
+          <input type=checkbox name=model value='densenet'> DenseNet <br/>
+        </div><br><br><br>
+        <input class="btn btn-primary btn-lg" type="submit" value="Upload and Submit">
+      </form>
+    </div>
+  
 
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
