@@ -47,6 +47,7 @@ def upload_file():
                     model_dict[MODEL] = True
                     # Run inference.py
                     script_command = f'python3 inference.py -d {input_filename} -o ./static/output_{MODEL}.png -be {MODEL}'
+                    print(MODEL)
                     os.system(script_command)
                 else:
                     model_dict[MODEL] = False
