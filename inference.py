@@ -48,7 +48,7 @@ def build_network(snapshot, backend, gpu = False):
         _, epoch = os.path.basename(snapshot).split('_')
         if not epoch == 'last':
             epoch = int(epoch)
-        if gpu:
+        if gpu is None:
             net.load_state_dict(torch.load(snapshot, map_location=torch.device('cpu')))
         else:
             net.load_state_dict(torch.load(snapshot))
