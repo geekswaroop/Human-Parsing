@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torchvision import transforms
+import scipy.ndimage
 
 from Net.pspnet import PSPNet
 
@@ -48,10 +49,12 @@ def build_network(snapshot, backend, gpu = False):
         _, epoch = os.path.basename(snapshot).split('_')
         if not epoch == 'last':
             epoch = int(epoch)
-        if gpu is None:
-            net.load_state_dict(torch.load(snapshot, map_location=torch.device('cpu')))
-        else:
+
+        if gpu:
             net.load_state_dict(torch.load(snapshot))
+        else:
+            net.load_state_dict(torch.load(snapshot, map_location=torch.device('cpu')))
+
         logging.info("Snapshot for epoch {} loaded from {}".format(epoch, snapshot))
     
     if gpu:
@@ -103,6 +106,9 @@ def show_image(img, pred, result_path, file_name='result.jpg', visualize=False):
     img = denormalize(img.cpu().numpy(), [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     img = img.transpose(1, 2, 0).reshape((h, w, 3))
     pred = pred.reshape((h, w))
+
+    # img = scipy.ndimage.zoom(img[:,:,:], 2, order=0)
+    # pred = scipy.ndimage.zoom(pred, 2, order=0)
 
     # show image
     ax0.set_title('img')
