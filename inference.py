@@ -40,7 +40,7 @@ def parse_arguments():
     return args
 
 
-def build_network(snapshot, backend, gpu):
+def build_network(snapshot, backend, gpu = False):
     epoch = 0
     backend = backend.lower()
     net = models[backend]()
@@ -49,7 +49,7 @@ def build_network(snapshot, backend, gpu):
         _, epoch = os.path.basename(snapshot).split('_')
         if not epoch == 'last':
             epoch = int(epoch)
-        
+
         if gpu:
             net.load_state_dict(torch.load(snapshot))
         else:
