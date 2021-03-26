@@ -2,7 +2,11 @@
 This project was taken as a year long project under IEEE NITK 2020.
 
 ## Demo
+<<<<<<< HEAD
 ![Select An Image](Demo/Human-Parsing-Demo-1.gif)
+=======
+![](Demo/Human-Parsing-Demo-1.gif)
+>>>>>>> 46d43dcf396d1641a2611101b7e479c19b3b787d
 
 ![](Demo/Human-Parsing-Demo-2.gif)
 
