@@ -2,7 +2,9 @@
 This project was taken as a year long project under IEEE NITK 2020.
 
 ## Demo
+
 ![](Demo/Human-Parsing-Demo-1.gif)
+
 ![](Demo/Human-Parsing-Demo-2.gif)
 
 ## Model
