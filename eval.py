@@ -57,9 +57,14 @@ def build_network(snapshot, backend, gpu):
 
     if snapshot is not None:
         _, epoch = os.path.basename(snapshot).split('_')
-        if not epoch == 'last':
+        if epoch != 'last':
             epoch = int(epoch)
-        net.load_state_dict(torch.load(snapshot))
+
+        if gpu:
+            net.load_state_dict(torch.load(snapshot))
+        else:
+            net.load_state_dict(torch.load(snapshot, map_location=torch.device('cpu')))
+
         logging.info("Snapshot for epoch {} loaded from {}".format(epoch, snapshot))
 
     if gpu:
